@@ -1,0 +1,24 @@
+diff --git a/page_manager_ui/src/Form/PageGeneralForm.php b/page_manager_ui/src/Form/PageGeneralForm.php
+index 2cf26b1..ccc6020 100644
+--- a/page_manager_ui/src/Form/PageGeneralForm.php
++++ b/page_manager_ui/src/Form/PageGeneralForm.php
+@@ -7,6 +7,7 @@
+ namespace Drupal\page_manager_ui\Form;
+ 
+ 
++use Drupal\Component\Utility\UrlHelper;
+ use Drupal\Core\Entity\Query\QueryFactory;
+ use Drupal\Core\Display\VariantManager;
+ use Drupal\Core\Form\FormBase;
+@@ -170,6 +171,11 @@ public function validatePath(&$element, FormStateInterface $form_state) {
+     /** @var $page \Drupal\page_manager\Entity\Page */
+     $page = $cached_values['page'];
+ 
++    // Ensure the path is not external.
++    if (UrlHelper::isExternal(trim($element['#value'], '/'))) {
++      $form_state->setErrorByName('path', $this->t('The page path must be internal.'));
++    }
++
+     // Ensure the path has a leading slash.
+     $value = '/' . trim($element['#value'], '/');
+     $form_state->setValueForElement($element, $value);
